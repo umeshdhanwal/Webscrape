@@ -65,10 +65,8 @@ websitelinks=[link_url+x for x in containers3]
 
 links_for_excel=[]
 linkonhighpoint=[]
-#websitelinks="http://www.highpointmarket.org/exhibitor/details/6467"
 
-page_link=gethtmlpage(websitelinks)
-gettingfulltext=page_link.findAll("div",{"class":"table-col table-span-8-12 text pad-left-20"})
+#websitelinks="http://www.highpointmarket.org/exhibitor/details/6467"
 
 for link in websitelinks:
     page_link=gethtmlpage(link)
@@ -81,9 +79,48 @@ for link in websitelinks:
         for elem in gettingfulltext[0].find_all('a', href=re.compile('www')):
             links_for_excel.append(elem['href'])
             linkonhighpoint.append(link)
-            print("value for "+link+" is "+elem['href'])
+            print("Full html link from the page "+link+" is "+elem['href'])
 
-     
+#Geeting the emails from contact us page
+#highpoint=['http://www.durhamfurniture.com','http://www.adrianahoyos.com','http://www.abbyson.com']
+
+value=[]
+final_link_page=''
+#try:
+for link in links_for_excel[1:10]:
+        if link:
+               print(link+"\n")
+               try:
+                  link_page_soup=gethtmlpage(link)
+                  url_split=link.split(".")
+               except:
+                   pass
+        try:
+            for contact in link_page_soup.find_all('a', href=re.compile('/contact')):
+                     final_link_page=gethtmlpage(contact['href']).text
+                     emails = re.findall(r'[\w\.-]+@[\w\.-]+', final_link_page) 
+        ## ['alice@google.com', 'bob@abc.com']    
+            if(emails==[]):
+                value.append('')
+                print("The email for "+link+" is not available")
+            else:
+               for email in emails:
+    # do something with each found email string and add it to the email list
+                value.append(email)
+                print("The email for "+link+" is "+value)
+        except:
+              pass          
+#except:
+#   if links_for_excel==[]:
+#    pass
+
+chk_link_page_soup=gethtmlpage(links_for_excel[50])
+url_split=links_for_excel[50].split(".")
+for chk in chk_link_page_soup.find_all('a', href=re.compile('/contact')):
+    print(chk['href'])
+    if not chk:
+        for chk in link_page_soup.find_all('a', href=re.compile(url_split[0]+'\.'+url_split[1]+'\.com'+'/index.php/contact')):
+           print(chk['href'])     
 
 #for link in websitelinks:
 #    print(link)
